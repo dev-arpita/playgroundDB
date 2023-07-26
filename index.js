@@ -1,22 +1,33 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"
-import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"
 
 const appSettings = {
-    databaseURL: "https://realtime-database-c03ce-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    databaseURL: "https://playground-67e7b-default-rtdb.asia-southeast1.firebasedatabase.app/"
 }
 
 const app = initializeApp(appSettings)
 const database = getDatabase(app)
-const shoppingListInDB = ref(database, "shoppingList")
+const booksInDB = ref(database, "Books")
 
-const inputFieldEl = document.getElementById("input-field")
-const addButtonEl = document.getElementById("add-button")
+const booksEl = document.getElementById("books")
 
-addButtonEl.addEventListener("click", function() {
-    let inputValue = inputFieldEl.value
-    
-    // Challenge: Use the Firebase function 'push' to push inputValue to the database
-    push(shoppingListInDB, inputValue)
-    
-    console.log(inputValue)
+onValue(booksInDB, function(snapshot) {
+    let booksArray = Object.values(snapshot.val())
+        clearBooksListEl()
+    // Challenge: Write a for loop where you console log each book.
+    for (let i = 0; i < booksArray.length; i++) {
+        let currentBook = booksArray[i]
+        
+        // Challenge: Use the appendBookToBooksListEl() function to append book instead of console logging
+        
+        appendBookToBooksListEl(currentBook)
+    }
 })
+
+function clearBooksListEl() {
+    booksEl.innerHTML = ""
+}
+
+function appendBookToBooksListEl(bookValue) {
+    booksEl.innerHTML += `<li>${bookValue}</li>`
+}
